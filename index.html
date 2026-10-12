@@ -146,9 +146,15 @@
       </div>
     </div>
     <form class="form" id="contact-form">
-      <div class="field"><label data-key="contact.nameL">Nafn</label><input type="text" name="name" autocomplete="name" required></div>
-      <div class="field"><label data-key="contact.emailL">Netfang</label><input type="email" name="email" autocomplete="email" required></div>
-      <div class="field"><label data-key="contact.msgL">Skilaboð</label><textarea name="message" required></textarea></div>
+      <div class="field"><label data-key="contact.nameL">Nafn</label><input type="text" name="name" autocomplete="name" maxlength="200" required></div>
+      <div class="field"><label data-key="contact.emailL">Netfang</label><input type="email" name="email" autocomplete="email" maxlength="200" required></div>
+      <div class="field"><label data-key="contact.msgL">Skilaboð</label><textarea name="message" maxlength="5000" required></textarea></div>
+      <!-- Gildra fyrir ruslpóstsróbóta: falinn reitur sem fólk sér aldrei.
+           Sé hann fylltur út er innsendingin hunsuð. -->
+      <div class="hpot" aria-hidden="true">
+        <label for="vh-website">Vefsíða</label>
+        <input type="text" id="vh-website" name="website" tabindex="-1" autocomplete="off">
+      </div>
       <button type="submit" class="btn btn--green" data-key="contact.send">Senda fyrirspurn</button>
       <p class="form__msg" id="form-msg" role="status"></p>
     </form>
@@ -185,7 +191,9 @@
   </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"
+        integrity="sha384-BWcjm9OdFth9TbhCxZPdm+gAOUMAzQy9nmTs12ioXdCcbVnJaPMn+fMUoQCLt60R"
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="js/config.js"></script>
 <script src="js/brand.js"></script>
 <script src="js/site.js"></script>

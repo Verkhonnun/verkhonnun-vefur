@@ -171,6 +171,9 @@ section{position:relative;}
 .field textarea{resize:vertical;min-height:120px;}
 .field input:focus,.field textarea:focus{outline:none;border-color:var(--green);background:rgba(255,255,255,.08);}
 .form .btn--green{justify-content:center;margin-top:4px;}
+/* Ruslpóstsgildra — falin fyrir fólk en sýnileg róbótum í DOM.
+   Utan skjás frekar en display:none, því sumir róbótar sleppa földum reitum. */
+.hpot{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;}
 .form__msg{font-size:14.5px;min-height:1.2em;}
 .form__msg.ok{color:var(--green);}
 .form__msg.err{color:#ff8d8d;}

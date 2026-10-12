@@ -25,6 +25,16 @@
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
 
+  // Hvítlisti fyrir slóðir úr gagnagrunni (ver gegn javascript: og data: í href)
+  const safeLink = (u) => {
+    const s = String(u == null ? "" : u).trim();
+    if (!s) return "";
+    if (/^https:\/\//i.test(s)) return s;            // ytri slóð
+    if (/^[/#]/.test(s)) return s;                   // innri slóð eða akkeri
+    if (/^[\w.\-/]+\.html(?:[#?][\w\-=&%.]*)?$/i.test(s)) return s; // t.d. gagnaver.html
+    return "";
+  };
+
   // ----- sækja gögn -----
   async function loadAll() {
     const [content, services, values, guides, projects, team] = await Promise.all([
@@ -51,7 +61,7 @@
     const L = lang;
 
     document.getElementById("svc-list").innerHTML = state.services.map((s) => {
-      const link = (s.link || "").trim();
+      const link = safeLink(s.link);
       const body = `
         <div class="svc__num">${esc(s.num)}</div>
         <div class="svc__body">
@@ -161,9 +171,30 @@
     const form = document.getElementById("contact-form");
     const msg = document.getElementById("form-msg");
     if (!form) return;
+    const opnad = Date.now(); // til að hafna innsendingu sem kemur of hratt
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const fd = new FormData(form);
+
+      // Ruslpóstsgildra: róbótar fylla falda reitinn — látum sem allt hafi tekist.
+      if ((fd.get("website") || "").toString().trim() !== "") {
+        form.reset();
+        msg.className = "form__msg ok";
+        msg.textContent = lang === "en"
+          ? "Thank you! We'll be in touch shortly."
+          : "Takk fyrir! Við höfum samband fljótlega.";
+        return;
+      }
+
+      // Of hröð innsending er nær alltaf róbóti. Fólk má reyna aftur.
+      if (Date.now() - opnad < 2000) {
+        msg.className = "form__msg err";
+        msg.textContent = lang === "en"
+          ? "Please try again in a moment."
+          : "Reyndu aftur eftir augnablik.";
+        return;
+      }
+
       const payload = {
         name: (fd.get("name") || "").toString().trim(),
         email: (fd.get("email") || "").toString().trim(),

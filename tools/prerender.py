@@ -48,12 +48,26 @@ def media_url(path):
     return MEDIA + path if path else None
 
 
+def safe_link(u):
+    """Hvítlisti fyrir slóðir úr gagnagrunni — speglar safeLink() í js/site.js."""
+    s = (u or "").strip()
+    if not s:
+        return ""
+    if re.match(r"^https://", s, re.I):
+        return s
+    if re.match(r"^[/#]", s):
+        return s
+    if re.match(r"^[\w.\-/]+\.html(?:[#?][\w\-=&%.]*)?$", s, re.I):
+        return s
+    return ""
+
+
 # ---------- birting (speglar js/site.js) ----------
 
 def render_services(rows):
     out = []
     for s in rows:
-        link = (s.get("link") or "").strip()
+        link = safe_link(s.get("link"))
         body = (
             f'<div class="svc__num">{esc(s["num"])}</div>'
             f'<div class="svc__body">'
